@@ -9,14 +9,25 @@ import dotenv from "dotenv";
 dotenv.config(); //envirornment folder file eka load kireema memagin siduwe..
   
 
-let app = express()
+const app = express();
 
 app.use(bodyParser.json());
-app.use((req,res,next) =>{
-   const token = req.header
-   console.log(token)
 
-})
+app.use((req,res,next) =>{
+   let token = req.header("Authorization");  //create authorization
+
+   if (token  != null){
+    token =token.replace("Bearer","");
+    Jwt.verify(token,"kv-secret-89!",(err,decoded) =>{
+
+        if(!err){
+            req.user = decoded;
+        }
+    });
+   }
+next()
+
+});
 
 let mongoUrl = process.env.MONGO_URL;
 
